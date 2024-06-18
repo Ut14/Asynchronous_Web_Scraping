@@ -8,9 +8,10 @@ import asyncio
 import pymysql
 import json
 
+# Apply nest_asyncio to allow nested asyncio loops
 nest_asyncio.apply()
 
-# Function to extract social media links
+# Function to extract social media links from BeautifulSoup object
 def extract_social_media_links(soup):
     social_media_links = []
     social_media_domains = ['facebook.com', 'twitter.com', 'linkedin.com', 'instagram.com', 'youtube.com']
@@ -20,7 +21,7 @@ def extract_social_media_links(soup):
             social_media_links.append(href)
     return social_media_links
 
-# Function to extract meta title and description
+# Function to extract meta title and description from BeautifulSoup object
 def extract_meta_tags(soup):
     meta_title = soup.title.string if soup.title else 'No title'
     meta_description = ''
@@ -30,7 +31,7 @@ def extract_meta_tags(soup):
         meta_description = soup.find('meta', attrs={'property': 'og:description'})['content']
     return meta_title, meta_description
 
-# Function to detect payment gateways
+# Function to detect payment gateways from BeautifulSoup object
 def detect_payment_gateways(soup):
     payment_gateways = []
     payment_keywords = ['paypal', 'stripe', 'razorpay', 'square', 'payu', 'braintree', 'authorize.net', '2checkout', 'adyen', 'worldpay']
@@ -40,7 +41,7 @@ def detect_payment_gateways(soup):
             payment_gateways.append(src)
     return payment_gateways
 
-# Function to detect tech stack (expanded list)
+# Function to detect tech stack from BeautifulSoup object
 def detect_tech_stack(soup):
     tech_stack = []
     tech_keywords = {
@@ -94,13 +95,13 @@ def detect_tech_stack(soup):
                 tech_stack.append(tech_keywords[keyword])
     return tech_stack
 
-# Function to extract website language
+# Function to extract website language from BeautifulSoup object
 def extract_website_language(soup):
     if soup.html and 'lang' in soup.html.attrs:
         return soup.html['lang']
     return 'Unknown'
 
-# Function to categorize website
+# Function to categorize website using a pre-trained model
 def categorize_website(soup, classifier, categories):
     text = soup.get_text(separator=' ', strip=True)
     if len(text) > 0:
@@ -108,7 +109,7 @@ def categorize_website(soup, classifier, categories):
         return prediction['labels'][0]
     return 'Unknown'
 
-# Asynchronous function to fetch a website
+# Asynchronous function to fetch website content
 async def fetch_website(session, website):
     try:
         async with session.get(website) as response:
@@ -117,7 +118,7 @@ async def fetch_website(session, website):
         print(f"Error fetching {website}: {e}")
         return None, website
 
-# Main function to process a list of websites
+# Main function to process a list of websites asynchronously
 async def process_websites_async(websites, classifier, categories):
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_website(session, website) for website in websites]
@@ -161,7 +162,7 @@ def process_websites(websites):
     return results
 
 # Read the list of websites from the CSV file
-csv_file = 'websites_list.csv'
+csv_file = 'website.csv'
 df = pd.read_csv(csv_file)
 websites = df['website_url'].tolist()
 
