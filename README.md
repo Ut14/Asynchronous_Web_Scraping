@@ -76,7 +76,7 @@ The possible categories for website content include:
 web_scraping_project/
 ├── Asynchronous_web_scraping.py
 ├── requirements.txt
-├── website_list.csv
+├── websites_list.csv
 └── Result.csv
 ```
 
